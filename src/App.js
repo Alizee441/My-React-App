@@ -1,25 +1,23 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
+import { Provider } from 'react-redux';
+import { createStore } from '@reduxjs/toolkit';
+import moviesReducer from './features/movies/moviesSlice';
+import MovieList from './components/MovieList';
+import Pagination from './components/Pagination';
+import Filter from './components/Filter';
 
-function App() {
+const store = createStore(moviesReducer);
+
+const App = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Provider store={store}>
+      <div className="app">
+        <Filter />
+        <MovieList />
+        <Pagination />
+      </div>
+    </Provider>
   );
-}
+};
 
 export default App;
