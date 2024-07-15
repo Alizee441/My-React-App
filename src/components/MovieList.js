@@ -1,25 +1,49 @@
+// src/components/MovieList.js
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { fetchMovies, setCategories } from '../features/movies/moviesSlice';
+import styled from 'styled-components';
 import MovieCard from './MovieCard';
+import { fetchMovies, setPage, setItemsPerPage } from '../redux/moviesSlice';
+import Pagination from './Pagination';
+import Filter from './Filter';
+
+const Container = styled.div`
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-around;
+`;
 
 const MovieList = () => {
   const dispatch = useDispatch();
-  // eslint-disable-next-line no-unused-vars
-  const movies = useSelector(state => state.movies.movies);
-  // eslint-disable-next-line no-unused-vars
-  const categories = useSelector(state => state.movies.categories);
+  const { movies, status, error, currentPage, itemsPerPage, filters } = useSelector(state => state.movies);
 
   useEffect(() => {
-    dispatch(fetchMovies()); // Charger les films
-    dispatch(setCategories(['Comedy', 'Animation', 'Thriller', 'Drame'])); // Exemple de chargement statique des catégories
-  }, [dispatch]);
+    if (status === 'idle') {
+      dispatch(fetchMovies());
+    }
+  }, [status, dispatch]);
+
+  const filteredMovies = movies.filter(movie => filters.length === 0 || filters.includes(movie.category));
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const currentMovies = filteredMovies.slice(startIndex, startIndex + itemsPerPage);
+
+  if (status === 'loading') {
+    return <div>Loading...</div>;
+  }
+
+  if (status === 'failed') {
+    return <div>Error: {error}</div>;
+  }
 
   return (
-    <div className="movie-list">
-      {movies.map(movie => (
-        <MovieCard key={movie.id} movie={movie} />
-      ))}
+    <div>
+      <Filter />
+      <Container>
+        {currentMovies.map(movie => (
+          <MovieCard key={movie.id} movie={movie} />
+        ))}
+      </Container>
+      <Pagination />
     </div>
   );
 };

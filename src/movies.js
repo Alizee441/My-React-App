@@ -1,4 +1,4 @@
-const moviesData = [
+const movies = [
     {
       id: '1',
       title: 'Oceans 8',
@@ -62,4 +62,4 @@ const moviesData = [
     },
   ]
   
-  export const movies$ = new Promise((resolve, reject) => setTimeout(resolve, 100, moviesData))
+  export const movies$ = new Promise((resolve, reject) => setTimeout(resolve, 100, movies))
